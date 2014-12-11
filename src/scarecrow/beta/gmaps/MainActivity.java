@@ -37,6 +37,12 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		try {
+			initialiseMap();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 		new LoadLocations().execute();
 		
 	}
@@ -84,20 +90,9 @@ public class MainActivity extends FragmentActivity {
 		protected JSONObject doInBackground(String... params) {
 			JSONParser jsonParser = new JSONParser();
 			JSONObject json = jsonParser.getJSONFromUrl(locations_Url, null);
-			return json;
-		}
-		
-		@Override
-		protected void onPostExecute(JSONObject json) {
-			pDialog.dismiss();
 			
 			JSONObject row = null;
-			
-			try {
-				initialiseMap();
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+			MarkerOptions marker;
 			
 			String status = "UnInitialised";
 			try {
@@ -123,7 +118,7 @@ public class MainActivity extends FragmentActivity {
         				
         				Toast.makeText(getApplicationContext(), title, Toast.LENGTH_LONG).show();
         				
-        				MarkerOptions marker = new MarkerOptions().position(new LatLng(latitude, longitude))
+        				marker = new MarkerOptions().position(new LatLng(latitude, longitude))
         						.title(title)
         						.snippet(snippet);
         				
@@ -132,11 +127,18 @@ public class MainActivity extends FragmentActivity {
         			}
         			
         		} else {
-        			Log.d("Error!", "No Notices");
+        			Log.d("Error!", "No Locations");
         		}
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
+			
+			return json;
+		}
+		
+		@Override
+		protected void onPostExecute(JSONObject json) {
+			pDialog.dismiss();			
 		}
 		
 	}
