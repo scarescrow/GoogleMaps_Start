@@ -22,6 +22,8 @@ public class MainActivity extends FragmentActivity {
 	private GoogleMap googleMap;
 	double latitude, longitude;
 	String title, snippet;
+	int total_markers;
+	MarkerOptions markers[];
 	
 	private static String locations_Url = "http://dcetech.com/sagnik/gmaps/get_data.php";
 	private static String KEY_NUMBER = "num";
@@ -37,13 +39,17 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		new LoadLocations().execute();
+		
 		try {
 			initialiseMap();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		
-		new LoadLocations().execute();
+		for(int q = 0; q < total_markers; q++) {
+			googleMap.addMarker(markers[q]);
+		}
 		
 	}
 
@@ -101,10 +107,11 @@ public class MainActivity extends FragmentActivity {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			Toast.makeText(getApplicationContext(), status, Toast.LENGTH_LONG);
+			Toast.makeText(getApplicationContext(), status, Toast.LENGTH_LONG).show();
 			
 			try {
 				int num = json.getInt(KEY_NUMBER);
+				markers = new MarkerOptions[num];
 				
 				if (num > 0) {
         			JSONArray data = json.getJSONArray(KEY_DATA);
@@ -116,14 +123,9 @@ public class MainActivity extends FragmentActivity {
         				latitude = row.getDouble(KEY_LATITUDE);
         				longitude =row.getDouble(KEY_LONGITUDE);
         				
-        				Toast.makeText(getApplicationContext(), title, Toast.LENGTH_LONG).show();
-        				
-        				marker = new MarkerOptions().position(new LatLng(latitude, longitude))
+        				markers[i] = new MarkerOptions().position(new LatLng(latitude, longitude))
         						.title(title)
-        						.snippet(snippet);
-        				
-        				googleMap.addMarker(marker);
-        				
+        						.snippet(snippet);	
         			}
         			
         		} else {
@@ -138,7 +140,7 @@ public class MainActivity extends FragmentActivity {
 		
 		@Override
 		protected void onPostExecute(JSONObject json) {
-			pDialog.dismiss();			
+			pDialog.dismiss();
 		}
 		
 	}
