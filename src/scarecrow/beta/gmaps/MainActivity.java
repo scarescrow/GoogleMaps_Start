@@ -29,7 +29,9 @@ public class MainActivity extends FragmentActivity {
 		latitude = 28.631370;
 		longitude = 77.222107;
 		
-		MarkerOptions marker = new MarkerOptions().position(new LatLng(latitude, longitude));
+		MarkerOptions marker = new MarkerOptions().position(new LatLng(latitude, longitude))
+				.title("Hello")
+				.snippet("This is Cha Bar!");
 		
 		googleMap.addMarker(marker);
 	}
