@@ -96,9 +96,12 @@ public class MainActivity extends FragmentActivity {
 		protected JSONObject doInBackground(String... params) {
 			JSONParser jsonParser = new JSONParser();
 			JSONObject json = jsonParser.getJSONFromUrl(locations_Url, null);
-			
+			return json;
+		}
+		
+		@Override
+		protected void onPostExecute(JSONObject json) {
 			JSONObject row = null;
-			MarkerOptions marker;
 			
 			String status = "UnInitialised";
 			try {
@@ -134,12 +137,6 @@ public class MainActivity extends FragmentActivity {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			
-			return json;
-		}
-		
-		@Override
-		protected void onPostExecute(JSONObject json) {
 			pDialog.dismiss();
 		}
 		
