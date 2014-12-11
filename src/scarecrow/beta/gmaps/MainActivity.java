@@ -26,6 +26,7 @@ public class MainActivity extends FragmentActivity {
 	private static String locations_Url = "http://dcetech.com/sagnik/gmaps/get_data.php";
 	private static String KEY_NUMBER = "num";
 	private static String KEY_DATA = "data";
+	private static String KEY_SUCCESS = "success";
 	private static String KEY_TITLE = "title";
 	private static String KEY_SNIPPET = "snippet";
 	private static String KEY_LATITUDE = "latitude";
@@ -73,7 +74,7 @@ public class MainActivity extends FragmentActivity {
 	    protected void onPreExecute() {
 			super.onPreExecute();
             pDialog = new ProgressDialog(MainActivity.this);
-            pDialog.setMessage("Fetching Notices ...");
+            pDialog.setMessage("Loading Locations ...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
             pDialog.show();
@@ -98,18 +99,29 @@ public class MainActivity extends FragmentActivity {
 				e.printStackTrace();
 			}
 			
+			String status = "UnInitialised";
+			try {
+				status = json.getString(KEY_SUCCESS);
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			Toast.makeText(getApplicationContext(), status, Toast.LENGTH_LONG);
+			
 			try {
 				int num = json.getInt(KEY_NUMBER);
-					
-        		if (num > 0) {
+				
+				if (num > 0) {
         			JSONArray data = json.getJSONArray(KEY_DATA);
         			
         			for(int i = 0; i < num; i++) {
         				row = data.getJSONObject(i);
         				title = row.getString(KEY_TITLE);
         				snippet = row.getString(KEY_SNIPPET);
-        				latitude = Double.parseDouble(row.getString(KEY_LATITUDE));
-        				longitude = Double.parseDouble(row.getString(KEY_LONGITUDE));
+        				latitude = row.getDouble(KEY_LATITUDE);
+        				longitude =row.getDouble(KEY_LONGITUDE);
+        				
+        				Toast.makeText(getApplicationContext(), title, Toast.LENGTH_LONG).show();
         				
         				MarkerOptions marker = new MarkerOptions().position(new LatLng(latitude, longitude))
         						.title(title)
